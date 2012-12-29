@@ -38,6 +38,18 @@ taskevo.Models.Task = Backbone.Model.extend( {
 
 	},
 
+	isComplete: function() {
+		return this.get( 'completed' ) ? true : false;
+	},
+
+	setCompleted: function() {
+		return this.save( { completed: 'now' } );
+	},
+
+	clearCompleted: function() {
+		return this.save( { completed: null } );
+	},
+
 	load: function( objType ) {
 
 		if ( this.loaded && ( arguments.length < 2 || !arguments[1] ) ) {

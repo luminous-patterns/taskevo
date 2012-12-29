@@ -9,11 +9,12 @@ taskevo.Views.List = Backbone.View.extend( {
 		var that = this;
 
 		// Events
+		this.model.on( 'change', this.render, this );
 		this.model.on( 'load-tasks', this.onLoadTasks, this );
 		this.model.tasks.on( 'add', this.onAddTask, this );
-		// this.model.tasks.on( 'remove', this.onRemoveTask, this );
 
 		// Task area
+		var titleEl = this.titleEl = $( '<h1>' + this.model.get( 'title' ) + ' (#' + this.model.id + ')</h1>' );
 		var tasksEl = this.tasksEl = $( '<ol class="tasks"></ol>' );
 		var addTaskFormEl = this.addTaskFormEl = $( '<form></form>' );
 		var taskSummaryEl = this.taskSummaryEl = $( '<input value="" />' );
@@ -27,7 +28,7 @@ taskevo.Views.List = Backbone.View.extend( {
 			.append( taskSubmitEl );
 
 		$( this.el )
-			.append( '<h1>' + this.model.get( 'title' ) + ' (#' + this.model.id + ')</h1>' )
+			.append( titleEl )
 			.append( deleteButtonEl )
 			.append( addTaskFormEl )
 			.append( tasksEl );
@@ -39,6 +40,7 @@ taskevo.Views.List = Backbone.View.extend( {
 	},
 
 	render: function() {
+		this.titleEl.html( this.model.get( 'title' ) + ' (#' + this.model.id + ')' );
 		return this;
 	},
 

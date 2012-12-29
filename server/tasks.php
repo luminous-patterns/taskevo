@@ -45,6 +45,14 @@ $app->put( '/tasks/:id', function ( $id ) use ( $app, $db ) {
 			$val = $db->sanitise( $val );
 			$data_sql[] = "`$col` = $val";
 		}
+		if ( $col == 'completed' ) {
+			if ( $val == 'now' ) {
+				$data_sql[] = "`completed` = NOW()";
+			}
+			else if ( !$val ) {
+				$data_sql[] = "`completed` = NULL";
+			}
+		}
 	}
 	$data_sql = implode( ',', $data_sql );
 
