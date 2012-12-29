@@ -1,9 +1,3 @@
-taskevo.Collections.TimeEntries = Backbone.Collection.extend( {
-
-	model: taskevo.Models.TimeEntry,
-	
-} );
-
 taskevo.Models.TimeEntry = Backbone.Model.extend( {
 
 	urlRoot: '//server.taskevo.com/timeentries',
@@ -69,4 +63,10 @@ taskevo.Models.TimeEntry = Backbone.Model.extend( {
 		} );
 	},
 
+} );
+
+taskevo.Collections.TimeEntries = Backbone.Collection.extend( {
+
+	model: taskevo.Models.TimeEntry,
+	
 } );

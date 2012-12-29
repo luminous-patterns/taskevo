@@ -23,6 +23,8 @@ $app = new \Slim\Slim( array(
 require 'database.php';
 $db = new IWDB();
 
+$app->contentType( "application/json" );
+
 $app->options( '/', function () use ( $app ) {
 
     echo '';
@@ -32,6 +34,7 @@ $app->options( '/', function () use ( $app ) {
 $object_types = array(
     'tasks',
     'users',
+    'lists',
 );
 
 foreach ( $object_types as $type ) {

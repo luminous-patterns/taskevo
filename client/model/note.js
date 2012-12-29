@@ -1,9 +1,3 @@
-taskevo.Collections.Notes = Backbone.Collection.extend( {
-
-	model: taskevo.Models.Note,
-	
-} );
-
 taskevo.Models.Note = Backbone.Model.extend( {
 
 	urlRoot: '//server.taskevo.com/notes',
@@ -20,4 +14,10 @@ taskevo.Models.Note = Backbone.Model.extend( {
 
 	},
 
+} );
+
+taskevo.Collections.Notes = Backbone.Collection.extend( {
+
+	model: taskevo.Models.Note,
+	
 } );
