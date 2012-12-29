@@ -15,9 +15,9 @@ $app->get( '/lists/:id', function ( $id ) use ( $app, $db ) {
 		die('invalid');
 	}
 
-	$tasks = $db->select( "SELECT * FROM `tasks` WHERE `list_id` = " . $list['id'] . " AND `deleted` IS NULL", 'rows' );
+	// $tasks = $db->select( "SELECT * FROM `tasks` WHERE `list_id` = " . $list['id'] . " AND `deleted` IS NULL", 'rows' );
 
-	$list['tasks'] = count( $tasks ) > 0 ? $tasks : null;
+	// $list['tasks'] = count( $tasks ) > 0 ? $tasks : null;
 
     echo json_encode( $list );
 
@@ -28,7 +28,7 @@ $app->get( '/lists/:id/:content', function ( $id, $content ) use ( $app, $db ) {
 	
 	$id = $db->sanitise( $id );
 
-	$list = $db->select( "SELECT * FROM `lists` WHERE `id` = $id", 'row' );
+	$list = $db->select( "SELECT * FROM `lists` WHERE `id` = $id AND `deleted` IS NULL", 'row' );
 
 	if ( !$list ) {
 		die('invalid');
@@ -84,7 +84,7 @@ $app->post( '/lists', function () use ( $app, $db ) {
 
 	$id = $db->insert( 'lists', $data, true );
 
-	echo json_encode( $db->select( "SELECT * FROM `lists` WHERE `id` = $id", 'row' ) );
+	echo json_encode( $db->select( "SELECT * FROM `lists` WHERE `id` = $id AND `deleted` IS NULL", 'row' ) );
 
 } );
 
@@ -107,11 +107,18 @@ $app->put( '/lists/:id', function ( $id ) use ( $app, $db ) {
 		SET $data_sql
 		WHERE `id` = $id" );
 
-	echo json_encode( $db->select( "SELECT * FROM `lists` WHERE `id` = $id", 'row' ) );
+	echo json_encode( $db->select( "SELECT * FROM `lists` WHERE `id` = $id AND `deleted` IS NULL", 'row' ) );
 
 } );
 
 // DELETE route
 $app->delete( '/lists/:id', function ( $id ) use ( $app, $db ) {
-    echo json_encode( array( 'id' => $id, 'request' => 'delete' ) );
+
+	$id = $db->sanitise( $id );
+
+	$db->query( "UPDATE `lists` SET `deleted` = NOW() WHERE `id` = $id" );
+	$db->query( "UPDATE `tasks` SET `deleted` = NOW() WHERE `list_id` = $id" );
+
+	$app->response()->status( 204 );
+
 } );

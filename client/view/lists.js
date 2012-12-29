@@ -8,6 +8,11 @@ taskevo.Views.Lists = Backbone.View.extend( {
 
 		var that = this;
 
+		// Events
+		taskevo.user.lists.on( 'sync', this.onLoadLists, this );
+		taskevo.user.lists.on( 'add', this.onAddList, this );
+		taskevo.user.lists.on( 'remove', this.onRemoveList, this );
+
 		// Lists area
 		var listsEl = this.listsEl = $( '<ol class="lists"></ol>' );
 		var addListFormEl = this.addListFormEl = $( '<form></form>' );
@@ -53,6 +58,11 @@ taskevo.Views.Lists = Backbone.View.extend( {
 		return this.addListEl( list );
 	},
 
+	onRemoveList: function( list, collection ) {
+		$( this.el ).find( 'li.list-' + list.id ).remove();
+		return this;
+	},
+
 	addListEl: function( list ) {
 
 		var that = this;
@@ -61,8 +71,7 @@ taskevo.Views.Lists = Backbone.View.extend( {
 
 		var data = { list: list, view: that };
 		var onClick = function( e ) {
-			e.data.view.options.stage.tasks.loadTasks( e.data.list.id );
-			console.log( 'clicked on list #' + e.data.list.id );
+			taskevo.events.trigger( 'view-list', e.data.list.id );
 		};
 
 		listEl.bind( 'click', data, onClick );

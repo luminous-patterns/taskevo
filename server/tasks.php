@@ -7,7 +7,7 @@
 // GET route
 $app->get( '/tasks/:id', function ( $id ) use ( $app, $db ) {
 	$id = $db->sanitise( $id );
-    echo json_encode( $db->select( "SELECT * FROM `tasks` WHERE `id` = $id", 'row' ) );
+    echo json_encode( $db->select( "SELECT * FROM `tasks` WHERE `id` = $id AND `deleted` IS NULL", 'row' ) );
 } );
 
 // POST route
@@ -29,7 +29,7 @@ $app->post( '/tasks', function () use ( $app, $db ) {
 
 	$id = $db->insert( 'tasks', $data, true );
 
-	echo json_encode( $db->select( "SELECT * FROM `tasks` WHERE `id` = $id", 'row' ) );
+	echo json_encode( $db->select( "SELECT * FROM `tasks` WHERE `id` = $id AND `deleted` IS NULL", 'row' ) );
 
 } );
 
@@ -52,11 +52,17 @@ $app->put( '/tasks/:id', function ( $id ) use ( $app, $db ) {
 		SET $data_sql
 		WHERE `id` = $id" );
 
-	echo json_encode( $db->select( "SELECT * FROM `tasks` WHERE `id` = $id", 'row' ) );
+	echo json_encode( $db->select( "SELECT * FROM `tasks` WHERE `id` = $id AND `deleted` IS NULL", 'row' ) );
 
 } );
 
 // DELETE route
 $app->delete( '/tasks/:id', function ( $id ) use ( $app, $db ) {
-    echo json_encode( array( 'id' => $id, 'request' => 'delete' ) );
+
+	$id = $db->sanitise( $id );
+
+	$db->query( "UPDATE `tasks` SET `deleted` = NOW() WHERE `id` = $id" );
+	
+	$app->response()->status( 204 );
+
 } );
